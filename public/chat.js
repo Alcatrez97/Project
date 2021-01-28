@@ -1,7 +1,7 @@
 
 $(function(){
    	//make connection
-	var socket = io.connect('http://localhost:3000')
+	var socket = io.connect('http://localhost:4000')
 
 	//buttons and inputs
 	var message = $("#message")
@@ -11,7 +11,7 @@ $(function(){
 	var send_username = $("#send_username")
 	var chatroom = $("#chatroom")
 	var feedback = $("#feedback")
-	var add_contact = $("contacts")
+	var add_contact = $("contacts") 
 
 	//Emit message
 	send_message.click(function(){
@@ -20,8 +20,8 @@ $(function(){
 
 	//Listen on new_message
 	socket.on("new_message", (data) => {
-		feedback.html('');
-		message.val('');
+		feedback.html('dhfgdgzdg2352355fsdf');
+		console.log(message.val());
 		chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
 	})
 

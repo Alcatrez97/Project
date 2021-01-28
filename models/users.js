@@ -13,7 +13,7 @@ const msgSchema = new Schema({
         type: String,
         default: 'text'
     },
-    data_text: {
+    data_text: { 
         type: String,
         required: true
     }
@@ -24,13 +24,22 @@ const msgSchema = new Schema({
 
 const conversationSchema = new Schema({
     contactId: String,
-    messages: [msgSchema]
+    messages: [msgSchema],
+    new_msg:{
+        type: Number,
+        default: -1
+    }
 })
 
 var User = new Schema({
     username: { 
         type: String,
         default: "Hello Guest"
+    },
+    userType: {
+        type: String,
+        default: "P",
+        required: true
     },
     firstname: String,
     lastname: String,
@@ -41,6 +50,7 @@ var User = new Schema({
     }]
     ,
     conversations: [conversationSchema],
+   
     
     facebookId: String,
     googleId: String

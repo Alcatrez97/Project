@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.static('public')) 
 
 //db connection
-const connect = mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true, dbName: 'chatApp'});
+const connect = mongoose.connect("mongodb+srv://root:toor@alca1.9aycb.mongodb.net/<dbname>?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true, dbName: 'chatApp'});
 connect.then(() => {
     console.log("Connected to DATABASE");
     users.create()
@@ -29,13 +29,15 @@ connect.then(() => {
         console.log('Empty User created')
     })
     .catch((err) => next(err))
+
+
 })
 .catch((err) => console.log('Cannot conndect to DB '+err))
 
 
 //routes
 app.get('/', (req, res) => {
-	res.render('facebook')
+	res.render('facebook.ejs')
 });
 app.use('/users',userRouter);
 app.use('/m',msgRouter); 

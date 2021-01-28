@@ -20,7 +20,11 @@ const msgSchema = new Schema({
  
 const conversationSchema = new Schema({
     contactId: String,
-    messages: [msgSchema]
+    messages: [msgSchema],
+    new_msg: {
+        type: Number,
+        default: '-1'
+    }
 });
 
 module.exports = mongoose.model('conversationSchema', conversationSchema);

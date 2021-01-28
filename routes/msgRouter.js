@@ -16,7 +16,8 @@ msgRouter.options('*', (req, res) => {
     res.sendStatus(200);
 });
 
-msgRouter.get('/getallMsg', authenticate.verifyUser, (req, res, next) => {
+//get all conversation of the current user
+msgRouter.get('/getallconversation', authenticate.verifyUser, (req, res, next) => {
     const userId = req.user;
     console.log(req)
     console.log(userId)
@@ -31,6 +32,7 @@ msgRouter.get('/getallMsg', authenticate.verifyUser, (req, res, next) => {
         .catch((err) => next(err))
 });
 
+//get a specific msg from give contactId's converstation 
 msgRouter.get('/msg', authenticate.verifyUser, (req, res, next) =>{
     const contactId = req.body.contactId;
     const userId = req.user._Id;
@@ -48,12 +50,42 @@ msgRouter.get('/msg', authenticate.verifyUser, (req, res, next) =>{
         .catch((err) => next(err));
 });
 
-msgRouter.post('/msg', authenticate.verifyUser, (req, res, next) => {
+//update undelivered msg for a given conversation
+msgRouter.get('/updateNewMsg', authenticate.verifyUser, (req, res, next) => {
+    const contactId = req.body.Sender;
+    const conv = req.body.conv;
+    Users.findById(contactId)
+        .then((user) =>{
+           var i = user.conversations[conv].new_msg;
+           var msgArr = [];
+           for (; i < user.conversations.length; i++) {
+               msgArr.push(user.conversations[i]);   
+           }
+           res.setHeader('Content-Type', 'application/json');
+           res.json(msgArr);
+        
+        })
+
+})
+
+//send msge from current logged in user to the given user
+msgRouter.post('/sendmsg', authenticate.verifyUser, (req, res, next) => {
     const senderId = req.user._id;
     const receverId = req.body.Sender;
+    Users.findById(senderId)
+        .then((user) => {
+            if(user.userType == "P"){
+                req.end("You are not allowed to edit this req")
+            }
+        })
     console.log(receverId+'<<<<<<<<< receverId')
     console.log(senderId+'<<<<<<<<<< SendeID')
    // console.log('user: '+ req.user);
+
+   //crypt data encryp && RSA key Blockchain ==>
+
+//    OpenId or OAuth
+   //encrypted data ==>
     message.create({'Sender': senderId, 'data_text': req.body.data_text})
         .then((msg) => {
             console.log('Msg created', msg)
@@ -98,6 +130,8 @@ msgRouter.post('/msg', authenticate.verifyUser, (req, res, next) => {
                                 if (element == senderId) {
                                 //    console.log('found>>>>>>>>>>>>>>');
                                     user.conversations[index].messages.push(msg);
+                                    if(user.conversations.new_msg>=index)
+                                        user.conversations.new_msg = index;
                                     user.save();
                                     fund = true;
                                     console.log('conversation found on reciever side');
@@ -109,7 +143,7 @@ msgRouter.post('/msg', authenticate.verifyUser, (req, res, next) => {
                             }
                         }
                         if (!fund) {
-                            conversation.create({ 'contactId': senderId, 'messages': [msg] })
+                            conversation.create({ 'contactId': senderId, 'messages': [msg] , 'new_msg': 0})
                                 .then((Conversation) => {
                                 // console.log('new conversation created : ' + Conversation);
                                     user.conversations.push(Conversation);

@@ -1,7 +1,7 @@
 {
-  "name": "simplechatapp",
+  "name": "test_api",
   "version": "1.0.0",
-  "description": "Simple chat app built with node.js and socket.io",
+  "description": "data exchange api",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
